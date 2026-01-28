@@ -1,0 +1,12 @@
+@(inputValue: Any, label: Any, args: (Symbol, Any)*)(implicit extraInfo: (Boolean, Boolean, B5FieldInfo), fc: B5FieldConstructor, msgsProv: MessagesProvider)
+@displayLabelWithInput(fieldInfo: b5.B5FieldInfo) = {
+	<input type="radio" id="@(fieldInfo.id)_@inputValue" name="@fieldInfo.name" value="@inputValue"@if(fieldInfo.value == Some(inputValue)){ checked} @toHtmlArgs(bs.ArgsMap.withAddingStringValue(fieldInfo.innerArgsMap ++ args.toMap, Symbol("class"), "form-check-input"))>
+  <label class="form-check-label" for="@(fieldInfo.id)_@inputValue">
+		@bs.Args.msg(label)(msgsProv)
+	</label>
+}
+@defining(extraInfo) { case (inline, disabled, fieldInfo) =>
+    <div class="form-check@if(inline){ form-check-inline}">
+      @displayLabelWithInput(fieldInfo)
+    </div>
+}

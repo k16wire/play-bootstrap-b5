@@ -1,0 +1,7 @@
+@(fieldInfo: b5.B5FieldInfo, inputHtml: Html)(implicit fc: b5.B5FieldConstructor, msgsProv: MessagesProvider)
+@b5.bsFieldConstructorCommon(fieldInfo, inputHtml, extraClasses = Some("col-12")) { content =>
+	@fieldInfo.labelOpt.map { label =>
+		<label class="form-label@if(fieldInfo.hideLabel){ visually-hidden}"@if(fieldInfo.withLabelFor){ for="@fieldInfo.id"}>@bs.Args.msg(label)(msgsProv)</label>
+	}
+	@content
+}

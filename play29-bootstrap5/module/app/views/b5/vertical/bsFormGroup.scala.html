@@ -1,0 +1,7 @@
+@(contentHtml: Html, argsMap: Map[Symbol, Any])(implicit msgsProv: MessagesProvider)
+@b5.bsFormGroupCommon(contentHtml, argsMap) { content =>
+	@argsMap.get(Symbol("_label")).map { label =>
+		<label class="form-label@if(bs.ArgsMap.isTrue(argsMap, Symbol("_hideLabel"))){ visually-hidden}">@bs.Args.msg(label)(msgsProv)</label>
+	}
+	@content
+}

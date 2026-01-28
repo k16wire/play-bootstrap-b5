@@ -1,0 +1,28 @@
+@(field: Field, args: (Symbol,Any)*)(implicit fc: b5.B5FieldConstructor, msgsProv: MessagesProvider)
+@displayLabelWithInput(textOpt: Option[Any], value: Any, fieldInfo: b5.B5FieldInfo) = {
+	<input type="checkbox" id="@fieldInfo.id" name="@fieldInfo.name" value="@value" @toHtmlArgs(bs.ArgsMap.withAddingStringValue(fieldInfo.innerArgsMap, Symbol("class"), "form-check-input" + (if (textOpt.isEmpty) " position-static" else "")))>
+	@textOpt.map { text =>
+		<label class="form-check-label" for="@fieldInfo.id">
+			@text
+		</label>
+	}
+}
+@defining({
+	val argsMap = args.toMap
+	val textOpt = argsMap.get(Symbol("_text")).map(bs.Args.msg(_)(msgsProv))
+	val value = argsMap.get(Symbol("value")).getOrElse("true").toString
+	val checked = argsMap.get(Symbol("checked")).orElse(field.value.map(_ == value).orElse(argsMap.get(Symbol("_default")))).map(_.toString == "true").getOrElse(false)
+	val containsReadonly = argsMap.contains(Symbol("readonly"))
+	val readonly = bs.ArgsMap.isTrue(argsMap, Symbol("readonly"))
+	val disabled = readonly || bs.ArgsMap.isTrue(argsMap, Symbol("disabled"))
+	(argsMap, textOpt, value, checked, containsReadonly, readonly, disabled)
+}){ case (argsMap, textOpt, value, checked, containsReadonly, readonly, disabled) =>
+	@inputFormGroup(field, withLabelFor = false, bs.Args.withDefault(args.filterNot(_._1 == Symbol("checked")), Symbol("checked") -> checked, Symbol("disabled") -> disabled)) { fieldInfo =>
+		<div class="form-check@if(containsReadonly){ checkbox-group}">
+			@displayLabelWithInput(textOpt, value, fieldInfo)
+			@if(containsReadonly) {
+				<input type="hidden" name="@fieldInfo.name" value="@{fieldInfo.value.getOrElse(if (checked) value else "")}"@if(!disabled){ disabled}/>
+			}
+		</div>
+	}(fc, msgsProv)
+}
