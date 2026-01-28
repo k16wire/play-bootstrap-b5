@@ -157,12 +157,24 @@ No wrapper elements, just raw inputs.
 @b5.select(form("tags"), tags, '_label -> "Tags", 'multiple -> true)
 ```
 
-### Buttons
+### Buttons and Button Groups
 
 ```scala
+// Submit button
 @b5.submit('class -> "btn btn-primary"){ Submit }
+
+// Reset button
 @b5.reset('class -> "btn btn-secondary"){ Reset }
+
+// Custom button
 @b5.button('class -> "btn btn-info", 'id -> "myBtn"){ Click Me }
+
+// Button Group
+@b5.buttonGroup('class -> "btn-group-lg") {
+    @b5.button('class -> "btn btn-outline-primary"){ Left }
+    @b5.button('class -> "btn btn-outline-primary"){ Middle }
+    @b5.button('class -> "btn btn-outline-primary"){ Right }
+}
 ```
 
 ## Common Arguments

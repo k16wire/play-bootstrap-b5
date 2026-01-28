@@ -45,6 +45,9 @@ package object b5 {
       case (info, i) => (id + "_info_" + i, info)
     }
 
+    /* Indicates if it's a custom element */
+    def isCustom(implicit fc: b5.B5FieldConstructor): Boolean = fc.isCustom || isTrue(argsMap, Symbol("_custom"))
+
     /* The optional validation state ("success", "warning" or "danger") */
     override lazy val status: Option[String] = B5FieldInfo.status(hasErrors, argsMap)
 
@@ -143,6 +146,7 @@ package object b5 {
   trait B5FieldConstructor extends BSFieldConstructor[B5FieldInfo] {
     /* Define the class of the corresponding form (ex: "form-horizontal", "form-inline", ...) */
     val formClass: String
+    val isCustom: Boolean
     val withFeedbackTooltip: Boolean
   }
 
@@ -171,41 +175,19 @@ package object b5 {
    * SHORTCUT HELPERS
    * *********************************************************************************************************************************
    */
-  def inputType(inputType: String, field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputWrapped(inputType, field, args: _*)(html => html)(fc, msgsProv)
+  // def inputType(inputType: String, field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputWrapped(inputType, field, args: _*)(html => html)(fc, msgsProv)
 
-  def text(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("text", field, args: _*)(fc, msgsProv)
-  def password(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("password", field.copy(value = Some("")), args: _*)(fc, msgsProv)
-  def color(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("color", field, args: _*)(fc, msgsProv)
-  def date(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("date", field, args: _*)(fc, msgsProv)
-  def datetime(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("datetime", field, args: _*)(fc, msgsProv)
-  def datetimeLocal(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("datetime-local", field, args: _*)(fc, msgsProv)
+  // def text(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("text", field, args: _*)(fc, msgsProv)
+  // def password(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("password", field.copy(value = Some("")), args: _*)(fc, msgsProv)
+  /*
   def email(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("email", field, args: _*)(fc, msgsProv)
-  def month(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("month", field, args: _*)(fc, msgsProv)
-  def number(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("number", field, args: _*)(fc, msgsProv)
-  def range(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("range", field, args: _*)(fc, msgsProv)
-  def search(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("search", field, args: _*)(fc, msgsProv)
-  def tel(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("tel", field, args: _*)(fc, msgsProv)
-  def time(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("time", field, args: _*)(fc, msgsProv)
-  def url(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("url", field, args: _*)(fc, msgsProv)
-  def week(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = inputType("week", field, args: _*)(fc, msgsProv)
-
-  def hidden(name: String, value: Any, args: (Symbol, Any)*) = hiddenInput(name, value, args: _*)
-  def hidden(field: Field, args: (Symbol, Any)*) = hiddenInput(name = field.name, value = field.value.orElse(bs.Args.get(args, Symbol("value"))), (bs.Args.inner(bs.Args.remove(args, Symbol("value")))): _*)
-
-  def radio(field: Field, args: (Symbol, Any)*)(content: Tuple3[Boolean, Boolean, B5FieldInfo] => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = radioWithContent(field, args: _*)(content)(fc, msgsProv)
-  def radio(field: Field, options: Seq[(String, Any)], args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = radioWithOptions(field, options, args: _*)(fc, msgsProv)
-
-  def select(field: Field, args: (Symbol, Any)*)(content: Set[String] => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = selectWithContent(field, args: _*)(content)(fc, msgsProv)
-  def select(field: Field, options: Seq[(String, String)], args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = selectWithOptions(field, options, args: _*)(fc, msgsProv)
+  def checkbox(field: Field, args: (Symbol, Any)*)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = checkbox(field, args: _*)(fc, msgsProv)
+  */
 
   def submit(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = buttonType("submit", args: _*)(text)(fc, msgsProv)
   def reset(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = buttonType("reset", args: _*)(text)(fc, msgsProv)
   def button(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = buttonType("button", args: _*)(text)(fc, msgsProv)
 
-  def static(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = staticBasic(args: _*)(text)(fc, msgsProv)
-  def static(label: String, args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = staticBasic(Args.withDefault(args, Symbol("_label") -> label): _*)(text)(fc, msgsProv)
-  def static(label: Html, args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = staticBasic(Args.withDefault(args, Symbol("_label") -> label): _*)(text)(fc, msgsProv)
-
-  def free(args: (Symbol, Any)*)(content: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = freeFormGroup(args)(_ => content)(fc, msgsProv)
+  def buttonGroup(args: (Symbol, Any)*)(content: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = views.html.b5.buttonGroup(args: _*)(content)(fc, msgsProv)
 
 }

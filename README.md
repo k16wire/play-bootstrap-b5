@@ -1,6 +1,6 @@
 # Play-Bootstrap
 
-[Play Framework](https://www.playframework.com/) library for Bootstrap.
+[Play Framework](https://www.playframework.com/) library for [Bootstrap](https://getbootstrap.com/).
 
 This is a collection of input helpers and field constructors for Play Framework to render Bootstrap HTML code.
 
