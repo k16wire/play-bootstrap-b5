@@ -9,7 +9,6 @@ scalaVersion := "2.13.12"
 crossScalaVersions := Seq("2.13.12", "3.3.1")
 
 resolvers ++= Seq(
-  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 )
 
@@ -33,6 +32,8 @@ PlayKeys.playOmnidoc := false
 // Maven settings
 //*******************************
 
+sonatypeProfileName := "com.adrianhurt"
+
 publishMavenStyle := true
 
 organization := "com.adrianhurt"
@@ -48,21 +49,10 @@ licenses := Seq("Apache License" -> url("https://github.com/playframework/play-b
 
 startYear := Some(2014)
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
+publishTo := sonatypePublishToBundle.value
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype.credentials")
-
-publishConfiguration := publishConfiguration.value.withOverwrite(isSnapshot.value)
-com.typesafe.sbt.pgp.PgpKeys.publishSignedConfiguration := com.typesafe.sbt.pgp.PgpKeys.publishSignedConfiguration.value.withOverwrite(isSnapshot.value)
-publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(isSnapshot.value)
-com.typesafe.sbt.pgp.PgpKeys.publishLocalSignedConfiguration := com.typesafe.sbt.pgp.PgpKeys.publishLocalSignedConfiguration.value.withOverwrite(isSnapshot.value)
