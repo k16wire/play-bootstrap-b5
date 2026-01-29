@@ -8,6 +8,21 @@ Play-Bootstrap is a Scala/Play Framework library providing input helpers and fie
 
 ## Build Commands
 
+### Using build.sh (Recommended)
+
+A build script is provided at the project root for convenience:
+
+```bash
+./build.sh              # Build Play 2.9 + Bootstrap 5 modules
+./build.sh --clean      # Clean before building
+./build.sh --test       # Build and run tests
+./build.sh --publish    # Build and publish to local Ivy repository
+./build.sh --all        # Build all Play versions
+./build.sh -c -t -p     # Combine options
+```
+
+### Manual sbt Commands
+
 Each module is a separate sbt project. Navigate to the module directory before running commands.
 
 ```bash
@@ -15,12 +30,14 @@ Each module is a separate sbt project. Navigate to the module directory before r
 cd play29-bootstrap5/module
 sbt compile           # Compile the module
 sbt test              # Run all tests
+sbt package           # Create JAR file
 sbt "testOnly *HelpersSpec"  # Run a single test spec
 
 # For core module
 cd core-play29
 sbt compile
 sbt test
+sbt package           # Create JAR file
 ```
 
 **sbt version:** 1.9.9
