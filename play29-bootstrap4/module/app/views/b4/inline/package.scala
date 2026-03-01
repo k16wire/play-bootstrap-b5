@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package views.html.b5
+package views.html.b4
 
 package object inline {
 
@@ -25,30 +25,29 @@ package object inline {
 
   /**
    * Declares the class for the Inline FieldConstructor.
-   * Note: Bootstrap 5 removed the form-inline class. Use utility classes like row, col-auto, g-3 instead.
    */
-  class InlineFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B5FieldConstructor {
-    /* Define the class of the corresponding form - using row and g-3 for inline-like behavior */
-    val formClass = "row row-cols-lg-auto g-3 align-items-center"
+  class InlineFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B4FieldConstructor {
+    /* Define the class of the corresponding form */
+    val formClass = "form-inline"
     /* Renders the corresponding template of the field constructor */
-    def apply(fieldInfo: B5FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml)(this, msgsProv)
+    def apply(fieldInfo: B4FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml)(this, msgsProv)
     /* Renders the corresponding template of the form group */
     def apply(contentHtml: Html, argsMap: Map[Symbol, Any])(implicit msgsProv: MessagesProvider) = bsFormGroup(contentHtml, argsMap)(msgsProv)
   }
 
   /**
    * Creates a new InlineFieldConstructor to use for specific forms or scopes (don't use it as a default one).
-   * If a default B5FieldConstructor and a specific InlineFieldConstructor are within the same scope, the more
+   * If a default B4FieldConstructor and a specific InlineFieldConstructor are within the same scope, the more
    * specific will be chosen.
    */
-  def fieldConstructorSpecific(withFeedbackTooltip: Boolean = false): InlineFieldConstructor =
-    new InlineFieldConstructor(withFeedbackTooltip)
+  def fieldConstructorSpecific(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): InlineFieldConstructor =
+    new InlineFieldConstructor(isCustom, withFeedbackTooltip)
 
   /**
-   * Returns it as a B5FieldConstructor to use it as default within a template
+   * Returns it as a B4FieldConstructor to use it as default within a template
    */
-  def fieldConstructor(withFeedbackTooltip: Boolean = false): B5FieldConstructor =
-    fieldConstructorSpecific(withFeedbackTooltip)
+  def fieldConstructor(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): B4FieldConstructor =
+    fieldConstructorSpecific(isCustom, withFeedbackTooltip)
 
   /**
    * **********************************************************************************************************************************
@@ -56,12 +55,12 @@ package object inline {
    * *********************************************************************************************************************************
    */
   def form(action: Call, args: (Symbol, Any)*)(body: InlineFieldConstructor => Html) = {
-    val ifc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.form(action, inner(args): _*)(body(ifc))(ifc)
+    val ifc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.form(action, inner(args): _*)(body(ifc))(ifc)
   }
   def formCSRF(action: Call, args: (Symbol, Any)*)(body: InlineFieldConstructor => Html)(implicit request: RequestHeader) = {
-    val ifc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.formCSRF(action, inner(args): _*)(body(ifc))(ifc, request)
+    val ifc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.formCSRF(action, inner(args): _*)(body(ifc))(ifc, request)
   }
 
 }

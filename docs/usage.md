@@ -4,6 +4,18 @@ This guide covers how to use Play-Bootstrap in your Play Framework application.
 
 ## Setup
 
+### Module Structure
+
+Play-Bootstrap는 2단계 모듈 구조로 되어 있습니다. **core** 모듈이 공통 기반을 제공하고, **bootstrap** 모듈이 Bootstrap 버전별 템플릿을 제공합니다.
+
+```
+core-play29 (1.6.1-P29)                ← 공통 기반 (BSFieldInfo, BSFieldConstructor, Args 등)
+  ├── play29-bootstrap4 (1.6.1-P29-B4)  ← Bootstrap 4 전용 템플릿 (b4.*)
+  └── play29-bootstrap5 (1.6.1-P29-B5)  ← Bootstrap 5 전용 템플릿 (b5.*)
+```
+
+core 모듈은 bootstrap 모듈의 의존성으로 자동 포함되므로, `play-bootstrap` 하나만 추가하면 됩니다.
+
 ### Add Dependency
 
 Add the appropriate dependency to your `build.sbt`:
@@ -12,25 +24,30 @@ Add the appropriate dependency to your `build.sbt`:
 // Play 2.9 + Bootstrap 5
 libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.6.1-P29-B5"
 
+// Play 2.9 + Bootstrap 4
+libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.6.1-P29-B4"
+
 // Play 2.8 + Bootstrap 4
 libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.6.1-P28-B4"
 ```
 
+> **Note:** `play-bootstrap-core`는 위 의존성에 자동 포함됩니다. 별도로 추가할 필요가 없습니다.
+
 ### Import in Templates
 
-For Bootstrap 5:
+For Bootstrap 5 (Play 2.9):
 ```scala
 @import views.html.b5._
 ```
 
-For Bootstrap 4:
+For Bootstrap 4 (Play 2.9 or Play 2.8):
 ```scala
 @import views.html.b4._
 ```
 
 ## Form Layouts
 
-Play-Bootstrap supports four form layouts:
+Play-Bootstrap supports four form layouts. The examples below use Bootstrap 5 (`b5`). For Bootstrap 4, replace `b5` with `b4` — the API is the same.
 
 ### Vertical Form (Default)
 
@@ -41,6 +58,15 @@ Labels appear above inputs.
     @b5.text(form("name"), '_label -> "Name")
     @b5.email(form("email"), '_label -> "Email")
     @b5.submit('class -> "btn btn-primary"){ Submit }
+}
+```
+
+Bootstrap 4 equivalent:
+```scala
+@b4.vertical.form(routes.Application.save()) { implicit fc =>
+    @b4.text(form("name"), '_label -> "Name")
+    @b4.email(form("email"), '_label -> "Email")
+    @b4.submit('class -> "btn btn-primary"){ Submit }
 }
 ```
 
@@ -316,5 +342,54 @@ Or at form level:
 ```scala
 @b5.vertical.form(routes.Application.save(), '_feedbackTooltip -> true) { implicit fc =>
     @b5.text(form("name"), '_label -> "Name")
+}
+```
+
+## Bootstrap 4 Notes (Play 2.9 + Bootstrap 4)
+
+The `play29-bootstrap4` module (`1.6.1-P29-B4`) provides the same API as `play29-bootstrap5` but renders Bootstrap 4 HTML. Use `b4` instead of `b5` in your templates.
+
+### Key Differences from Bootstrap 5
+
+| Feature | Bootstrap 4 (`b4`) | Bootstrap 5 (`b5`) |
+|---------|---------------------|---------------------|
+| Form group wrapper | `form-group` class | `mb-3` class |
+| Screen reader only | `sr-only` | `visually-hidden` |
+| Checkbox/radio | `custom-control`, `custom-checkbox` | `form-check` |
+| File input | `custom-file` | `form-control` |
+| Static text | `form-control-plaintext` | `form-control-plaintext` |
+| Inline form | `form-inline` class | Grid utilities (`row`, `col-auto`) |
+
+### Bootstrap 4 Example
+
+```scala
+@import views.html.b4._
+
+@b4.vertical.form(routes.Application.save()) { implicit fc =>
+    @b4.text(form("name"), '_label -> "Name", 'placeholder -> "Enter name")
+    @b4.email(form("email"), '_label -> "Email")
+    @b4.password(form("password"), '_label -> "Password")
+    @b4.select(form("role"), Seq("admin" -> "Admin", "user" -> "User"), '_label -> "Role")
+    @b4.checkbox(form("agree"), '_text -> "I agree to terms")
+    @b4.submit('class -> "btn btn-primary"){ Submit }
+}
+```
+
+### Bootstrap 4 Horizontal Form
+
+```scala
+@b4.horizontal.form(routes.Application.save(), "col-md-2", "col-md-10") { implicit fc =>
+    @b4.text(form("name"), '_label -> "Name")
+    @b4.email(form("email"), '_label -> "Email")
+    @b4.submit('class -> "btn btn-primary"){ Submit }
+}
+```
+
+### Bootstrap 4 CSRF Form
+
+```scala
+@b4.vertical.formCSRF(routes.Application.save()) { implicit fc =>
+    @b4.text(form("name"), '_label -> "Name")
+    @b4.submit('class -> "btn btn-primary"){ Submit }
 }
 ```

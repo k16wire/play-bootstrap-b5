@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package views.html.b5
+package views.html.b4
 
 package object horizontal {
 
@@ -25,32 +25,32 @@ package object horizontal {
 
   /**
    * Declares the class for the Horizontal FieldConstructor.
-   * It needs the column widths for the corresponding Bootstrap5 form-group
+   * It needs the column widths for the corresponding Bootstrap3 form-group
    */
-  case class HorizontalFieldConstructor(colLabel: String, colInput: String, val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B5FieldConstructor {
+  case class HorizontalFieldConstructor(colLabel: String, colInput: String, val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B4FieldConstructor {
     /* The equivalent offset if label is not present (ex: colLabel = "col-md-2"  =>  colOffset = "offset-md-2") */
     val colOffset: String = colLabel.replace("col", "offset")
     /* Define the class of the corresponding form */
-    val formClass = ""
+    val formClass = "form-horizontal"
     /* Renders the corresponding template of the field constructor */
-    def apply(fieldInfo: B5FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml, colLabel, colOffset, colInput)(this, msgsProv)
+    def apply(fieldInfo: B4FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml, colLabel, colOffset, colInput)(this, msgsProv)
     /* Renders the corresponding template of the form group */
     def apply(contentHtml: Html, argsMap: Map[Symbol, Any])(implicit msgsProv: MessagesProvider) = bsFormGroup(contentHtml, argsMap, colLabel, colOffset, colInput)(msgsProv)
   }
 
   /**
    * Returns a new HorizontalFieldConstructor to use for specific forms or scopes (don't use it as a default one).
-   * If a default B5FieldConstructor and a specific HorizontalFieldConstructor are within the same scope, the more
+   * If a default B4FieldConstructor and a specific HorizontalFieldConstructor are within the same scope, the more
    * specific will be chosen.
    */
-  def fieldConstructorSpecific(colLabel: String, colInput: String, withFeedbackTooltip: Boolean = false): HorizontalFieldConstructor =
-    new HorizontalFieldConstructor(colLabel, colInput, withFeedbackTooltip)
+  def fieldConstructorSpecific(colLabel: String, colInput: String, isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): HorizontalFieldConstructor =
+    new HorizontalFieldConstructor(colLabel, colInput, isCustom, withFeedbackTooltip)
 
   /**
-   * Returns it as a B5FieldConstructor to use it as default within a template
+   * Returns it as a B4FieldConstructor to use it as default within a template
    */
-  def fieldConstructor(colLabel: String, colInput: String, withFeedbackTooltip: Boolean = false): B5FieldConstructor =
-    fieldConstructorSpecific(colLabel, colInput, withFeedbackTooltip)
+  def fieldConstructor(colLabel: String, colInput: String, isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): B4FieldConstructor =
+    fieldConstructorSpecific(colLabel, colInput, isCustom, withFeedbackTooltip)
 
   /**
    * **********************************************************************************************************************************
@@ -58,12 +58,12 @@ package object horizontal {
    * *********************************************************************************************************************************
    */
   def form(action: Call, colLabel: String, colInput: String, args: (Symbol, Any)*)(body: HorizontalFieldConstructor => Html) = {
-    val hfc = fieldConstructorSpecific(colLabel, colInput, withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.form(action, inner(args): _*)(body(hfc))(hfc)
+    val hfc = fieldConstructorSpecific(colLabel, colInput, isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.form(action, inner(args): _*)(body(hfc))(hfc)
   }
   def formCSRF(action: Call, colLabel: String, colInput: String, args: (Symbol, Any)*)(body: HorizontalFieldConstructor => Html)(implicit request: RequestHeader) = {
-    val hfc = fieldConstructorSpecific(colLabel, colInput, withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.formCSRF(action, inner(args): _*)(body(hfc))(hfc, request)
+    val hfc = fieldConstructorSpecific(colLabel, colInput, isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.formCSRF(action, inner(args): _*)(body(hfc))(hfc, request)
   }
 
 }

@@ -188,6 +188,6 @@ package object b5 {
   def reset(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = buttonType("reset", args: _*)(text)(fc, msgsProv)
   def button(args: (Symbol, Any)*)(text: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = buttonType("button", args: _*)(text)(fc, msgsProv)
 
-  def buttonGroup(args: (Symbol, Any)*)(content: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider) = views.html.b5.buttonGroup(args: _*)(content)(fc, msgsProv)
+  def buttonGroup(args: (Symbol, Any)*)(content: => Html)(implicit fc: B5FieldConstructor, msgsProv: MessagesProvider): Html = views.html.b5.buttonGroup(args: _*)(content)(fc, msgsProv)
 
 }

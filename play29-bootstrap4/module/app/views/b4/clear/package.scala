@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package views.html.b5
+package views.html.b4
 
 package object clear {
 
@@ -26,28 +26,28 @@ package object clear {
   /**
    * Declares the class for the Clear FieldConstructor.
    */
-  class ClearFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B5FieldConstructor {
+  class ClearFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B4FieldConstructor {
     /* Define the class of the corresponding form */
-    val formClass = ""
+    val formClass = "form-clear"
     /* Renders the corresponding template of the field constructor */
-    def apply(fieldInfo: B5FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = inputHtml
+    def apply(fieldInfo: B4FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = inputHtml
     /* Renders the corresponding template of the form group */
     def apply(contentHtml: Html, argsMap: Map[Symbol, Any])(implicit msgsProv: MessagesProvider) = contentHtml
   }
 
   /**
    * Creates a new ClearFieldConstructor to use for specific forms or scopes (don't use it as a default one).
-   * If a default B5FieldConstructor and a specific ClearFieldConstructor are within the same scope, the more
+   * If a default B4FieldConstructor and a specific ClearFieldConstructor are within the same scope, the more
    * specific will be chosen.
    */
-  def fieldConstructorSpecific(withFeedbackTooltip: Boolean = false): ClearFieldConstructor =
-    new ClearFieldConstructor(withFeedbackTooltip)
+  def fieldConstructorSpecific(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): ClearFieldConstructor =
+    new ClearFieldConstructor(isCustom, withFeedbackTooltip)
 
   /**
-   * Returns it as a B5FieldConstructor to use it as default within a template
+   * Returns it as a B4FieldConstructor to use it as default within a template
    */
-  def fieldConstructor(withFeedbackTooltip: Boolean = false): B5FieldConstructor =
-    fieldConstructorSpecific(withFeedbackTooltip)
+  def fieldConstructor(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): B4FieldConstructor =
+    fieldConstructorSpecific(isCustom, withFeedbackTooltip)
 
   /**
    * **********************************************************************************************************************************
@@ -55,12 +55,12 @@ package object clear {
    * *********************************************************************************************************************************
    */
   def form(action: Call, args: (Symbol, Any)*)(body: ClearFieldConstructor => Html) = {
-    val cfc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.form(action, inner(args): _*)(body(cfc))(cfc)
+    val cfc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.form(action, inner(args): _*)(body(cfc))(cfc)
   }
   def formCSRF(action: Call, args: (Symbol, Any)*)(body: ClearFieldConstructor => Html)(implicit request: RequestHeader) = {
-    val cfc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.formCSRF(action, inner(args): _*)(body(cfc))(cfc, request)
+    val cfc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.formCSRF(action, inner(args): _*)(body(cfc))(cfc, request)
   }
 
 }

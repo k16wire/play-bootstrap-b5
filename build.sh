@@ -7,6 +7,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Play 2.9 requires Java 11+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
+export PATH="$JAVA_HOME/bin:$PATH"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -32,10 +36,10 @@ usage() {
     echo "  -c, --clean       Clean before building"
     echo "  -t, --test        Run tests after building"
     echo "  -p, --publish     Publish to local Ivy repository"
-    echo "  -a, --all         Build all Play versions (26, 27, 28, 29)"
+    echo "  -a, --all         Build all Play versions (26, 27, 28, 29) and Bootstrap versions"
     echo "  -h, --help        Show this help message"
     echo ""
-    echo "By default, builds only Play 2.9 + Bootstrap 5 modules."
+    echo "By default, builds Play 2.9 modules (Bootstrap 4 and Bootstrap 5)."
 }
 
 CLEAN=false
@@ -130,10 +134,12 @@ if [ "$BUILD_ALL" = true ]; then
     build_module "play27-bootstrap4/module" "play27-bootstrap4"
     build_module "play28-bootstrap3/module" "play28-bootstrap3"
     build_module "play28-bootstrap4/module" "play28-bootstrap4"
+    build_module "play29-bootstrap4/module" "play29-bootstrap4"
     build_module "play29-bootstrap5/module" "play29-bootstrap5"
 else
-    # Build only Play 2.9 + Bootstrap 5 (recommended)
+    # Build Play 2.9 modules (Bootstrap 4 and Bootstrap 5)
     build_module "core-play29" "core-play29"
+    build_module "play29-bootstrap4/module" "play29-bootstrap4"
     build_module "play29-bootstrap5/module" "play29-bootstrap5"
 fi
 

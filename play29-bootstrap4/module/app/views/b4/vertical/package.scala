@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package views.html.b5
+package views.html.b4
 
 package object vertical {
 
@@ -26,28 +26,28 @@ package object vertical {
   /**
    * Declares the class for the Vertical FieldConstructor.
    */
-  class VerticalFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B5FieldConstructor {
+  class VerticalFieldConstructor(val isCustom: Boolean = false, val withFeedbackTooltip: Boolean = false) extends B4FieldConstructor {
     /* Define the class of the corresponding form */
-    val formClass = ""
+    val formClass = "form-vertical"
     /* Renders the corresponding template of the field constructor */
-    def apply(fieldInfo: B5FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml)(this, msgsProv)
+    def apply(fieldInfo: B4FieldInfo, inputHtml: Html)(implicit msgsProv: MessagesProvider) = bsFieldConstructor(fieldInfo, inputHtml)(this, msgsProv)
     /* Renders the corresponding template of the form group */
     def apply(contentHtml: Html, argsMap: Map[Symbol, Any])(implicit msgsProv: MessagesProvider) = bsFormGroup(contentHtml, argsMap)(msgsProv)
   }
 
   /**
    * Creates a new VerticalFieldConstructor to use for specific forms or scopes (don't use it as a default one).
-   * If a default B5FieldConstructor and a specific VerticalFieldConstructor are within the same scope, the more
+   * If a default B4FieldConstructor and a specific VerticalFieldConstructor are within the same scope, the more
    * specific will be chosen.
    */
-  def fieldConstructorSpecific(withFeedbackTooltip: Boolean = false): VerticalFieldConstructor =
-    new VerticalFieldConstructor(withFeedbackTooltip)
+  def fieldConstructorSpecific(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): VerticalFieldConstructor =
+    new VerticalFieldConstructor(isCustom, withFeedbackTooltip)
 
   /**
-   * Returns it as a B5FieldConstructor to use it as default within a template
+   * Returns it as a B4FieldConstructor to use it as default within a template
    */
-  def fieldConstructor(withFeedbackTooltip: Boolean = false): B5FieldConstructor =
-    fieldConstructorSpecific(withFeedbackTooltip)
+  def fieldConstructor(isCustom: Boolean = false, withFeedbackTooltip: Boolean = false): B4FieldConstructor =
+    fieldConstructorSpecific(isCustom, withFeedbackTooltip)
 
   /**
    * **********************************************************************************************************************************
@@ -55,12 +55,12 @@ package object vertical {
    * *********************************************************************************************************************************
    */
   def form(action: Call, args: (Symbol, Any)*)(body: VerticalFieldConstructor => Html) = {
-    val vfc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.form(action, inner(args): _*)(body(vfc))(vfc)
+    val vfc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.form(action, inner(args): _*)(body(vfc))(vfc)
   }
   def formCSRF(action: Call, args: (Symbol, Any)*)(body: VerticalFieldConstructor => Html)(implicit request: RequestHeader) = {
-    val vfc = fieldConstructorSpecific(withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
-    views.html.b5.formCSRF(action, inner(args): _*)(body(vfc))(vfc, request)
+    val vfc = fieldConstructorSpecific(isCustom = isTrue(args, Symbol("_custom")), withFeedbackTooltip = isTrue(args, Symbol("_feedbackTooltip")))
+    views.html.b4.formCSRF(action, inner(args): _*)(body(vfc))(vfc, request)
   }
 
 }
